@@ -27,16 +27,21 @@ os.chdir('models')
 timeline = api.home_timeline()
 
 # get fortnite search
-search = api.search("Fortnite", lang="en", count=1)
+search = api.search("Fortnite", lang="en", count=2)
+
+def tweeter(count):
+    try:
+        timeline[count].favorite()
+        timeline[count].retweet()
+        search[count].favorite()
+        search[count].retweet()
+        search[count].user.follow()
+    except tp.TweepError:
+        tweeter(count + 1)
 
 # iterates over pictures in models folder
 for model_image in os.listdir('.'):
     api.update_with_media(model_image)
-    try:
-        timeline[0].favorite()
-        timeline[0].retweet()
-        search[0].favorite()
-        search[0].retweet()
-    except:
-        pass
+    tweeter(0)
+    os.remove(model_image)
     time.sleep(900)
